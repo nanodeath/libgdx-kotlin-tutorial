@@ -1,5 +1,6 @@
 package com.mygdx.game
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.OrthographicCamera
@@ -14,6 +15,8 @@ import com.google.inject.Singleton
 
 class GameModule(private val myGdxGame: MyGdxGame) : Module {
     override fun configure(binder: Binder) {
+        binder.requireAtInjectOnConstructors()
+        binder.requireExactBindingAnnotations()
         binder.bind(SpriteBatch::class.java).toInstance(myGdxGame.batch)
     }
 
@@ -42,6 +45,9 @@ class GameModule(private val myGdxGame: MyGdxGame) : Module {
         Box2D.init()
         return World(Vector2(0F, -9.81F), true)
     }
+
+    @Provides @Singleton
+    fun engine() : Engine = myGdxGame.engine
 }
 
 data class Systems(val list: List<Class<out EntitySystem>>)
